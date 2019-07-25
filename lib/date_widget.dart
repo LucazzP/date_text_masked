@@ -7,12 +7,14 @@ class DateTextFormField extends StatefulWidget {
   final String labelFail;
   final InputDecoration decoration;
   final bool Function(DateTime) validator;
+  final String dateFormat;
 
   DateTextFormField({
     @required this.onValidate, 
     this.labelFail = 'Invalid date', 
     this.decoration,
     @required this.validator,
+    this.dateFormat = 'yyyy-dd-mm',
     Key key
   }) : super(key: key);
 
@@ -22,10 +24,41 @@ class DateTextFormField extends StatefulWidget {
 
 class _DateTextFormFieldState extends State<DateTextFormField> {
   MaskedTextController _dateController;
+  int _positionYear;
+  int _positionMonth;
+  int _positionDay;
+  String _divider;
+
+  String stringToMask(String dateFormat){
+    String date;
+    date = dateFormat.replaceAll('d', '0');
+    date = date.replaceAll('m', '0');
+    date = date.replaceAll('y', '0');
+    return date;
+  }
+
+  setDivider(){
+    String dateFormat = widget.dateFormat;
+    if(dateFormat.contains('/')) _divider = '/';
+    else if(dateFormat.contains('-')) _divider = '-';
+  }
+
+  setPositions(){
+    String dateFormat = widget.dateFormat;
+    int i = 0;
+    dateFormat.split(_divider).forEach((item) {
+      if(item.contains('y')) _positionYear = i;
+      else if(item.contains('m')) _positionMonth = i;
+      else if(item.contains('d')) _positionDay = i;
+      i++;
+    });
+  }
 
   @override
   void initState() {
-    _dateController = MaskedTextController(mask: '00/00/0000');
+    _dateController = MaskedTextController(mask: stringToMask(widget.dateFormat));
+    setDivider();
+    setPositions();
     super.initState();
   }
 
@@ -36,14 +69,14 @@ class _DateTextFormFieldState extends State<DateTextFormField> {
       keyboardType: TextInputType.datetime,
       validator: ((value) {
         if(value.isNotEmpty){
-          List _valueSplit = value.split('/');
+          List _valueSplit = value.split(_divider);
           List<int> _dateList = List<int>();
           _valueSplit.forEach((v){
             _dateList.add(int.parse(v));
           });
-          if(_dateList[2] >= 1900 && _dateList[1] <= 12 && _dateList[0] <= 31){
+          if(_dateList[_positionYear] >= 1900 && _dateList[_positionMonth] <= 12 && _dateList[_positionDay] <= 31){
 
-            DateTime date = DateTime(_dateList[2], _dateList[1], _dateList[0]);
+            DateTime date = DateTime(_dateList[_positionYear], _dateList[_positionMonth], _dateList[_positionDay]);
           
             if(widget.validator(date)){
               widget.onValidate(date);
