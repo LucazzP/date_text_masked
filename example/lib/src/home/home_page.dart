@@ -23,15 +23,15 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               DateTextFormField(
-                onValidate: (date){
+                onValidate: (date) {
                   print(date);
                 },
-                validator: ((date){
+                validator: ((date) {
                   return true;
                 }),
               ),
               RaisedButton(
-                onPressed: (){
+                onPressed: () {
                   formKey.currentState.validate();
                 },
                 child: Text('Get Date'),

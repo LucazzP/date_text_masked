@@ -1,8 +1,11 @@
 name: date_text_masked
-description: A new Flutter package project.
-version: 0.0.1
-author:
-homepage:
+description: This plugin uses the TextFormField with mask for dates and converts from string to DateTime automatically.
+version: 0.1.0
+author: 
+  Lucas Henrique Polazzo
+  <lucashpolazzo2013@gmail.com>
+homepage: https://github.com/LucazzP
+repository: https://github.com/LucazzP/date_text_masked
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
