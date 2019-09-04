@@ -1,11 +1,13 @@
+import 'package:date_text_masked/date_bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_masked_text/flutter_masked_text.dart';
 
 class DateTextFormField extends StatefulWidget {
   final Function(DateTime) onValidate;
   final String labelFail;
   final InputDecoration decoration;
   final bool Function(DateTime) validator;
+
+  ///Don't use the caracter '!' to divide the date.
   final String dateFormat;
   final String initialData;
 
@@ -24,11 +26,12 @@ class DateTextFormField extends StatefulWidget {
 }
 
 class DateTextFormFieldState extends State<DateTextFormField> {
-  MaskedTextController _dateController;
   int _positionYear;
   int _positionMonth;
   int _positionDay;
   String _divider;
+  DateBloc bloc;
+  TextEditingController _textController;
 
   String stringToMask(String dateFormat) {
     String date;
@@ -60,45 +63,59 @@ class DateTextFormFieldState extends State<DateTextFormField> {
 
   @override
   void initState() {
-    _dateController = MaskedTextController(
-        mask: stringToMask(widget.dateFormat), text: widget.initialData);
+    _textController = TextEditingController(text: widget.initialData);
     setDivider();
     setPositions();
+    bloc = DateBloc(_divider, _positionYear);
+    if(widget.initialData != null) bloc.dateIn.add(widget.initialData);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      controller: _dateController,
-      keyboardType: TextInputType.datetime,
-      validator: ((value) {
-        if (value.isNotEmpty) {
-          List _valueSplit = value.split(_divider);
-          List<int> _dateList = List<int>();
-          _valueSplit.forEach((v) {
-            _dateList.add(int.parse(v));
-          });
-          if (_dateList[_positionYear] >= 1900 &&
-              _dateList[_positionMonth] <= 12 &&
-              _dateList[_positionDay] <= 31) {
-            DateTime date = DateTime(_dateList[_positionYear],
-                _dateList[_positionMonth], _dateList[_positionDay]);
+    print('rebuild');
 
-            if (widget.validator(date)) {
-              widget.onValidate(date);
-              return null;
+    return StreamBuilder<String>(
+      stream: bloc.dateOut,
+      builder: (context, snapshot) {
+        _textController = TextEditingController.fromValue(TextEditingValue(text: snapshot?.data ?? '', selection: TextSelection.collapsed(offset: snapshot?.data?.length ?? 0)));
+
+        return TextFormField(
+          controller: _textController,
+          maxLength: 10,
+          keyboardType: TextInputType.datetime,
+          onChanged: ((value){
+            bloc.dateIn.add(bloc.date.value.length <= value.length ? value : value + '!');
+          }),
+          validator: ((value) {
+            if (value.isNotEmpty) {
+              List _valueSplit = value.split(_divider);
+              List<int> _dateList = List<int>();
+              _valueSplit.forEach((v) {
+                _dateList.add(int.parse(v));
+              });
+              if (_dateList[_positionYear] >= 1900 &&
+                  _dateList[_positionMonth] <= 12 &&
+                  _dateList[_positionDay] <= 31) {
+                DateTime date = DateTime(_dateList[_positionYear],
+                    _dateList[_positionMonth], _dateList[_positionDay]);
+
+                if (widget.validator(date)) {
+                  widget.onValidate(date);
+                  return null;
+                } else {
+                  return widget.labelFail;
+                }
+              } else {
+                return widget.labelFail;
+              }
             } else {
               return widget.labelFail;
             }
-          } else {
-            return widget.labelFail;
-          }
-        } else {
-          return widget.labelFail;
-        }
-      }),
-      decoration: widget.decoration,
+          }),
+          decoration: widget.decoration,
+        );
+      }
     );
   }
 }
