@@ -8,3 +8,6 @@
 ## [0.1.1] - 2019/09/04
  - Removed maskedController
  - Added bloc to add dividers
+
+## [0.1.2] - 2019/09/26
+ - Updated packages
