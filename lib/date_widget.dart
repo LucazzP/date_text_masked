@@ -67,7 +67,7 @@ class DateTextFormFieldState extends State<DateTextFormField> {
     setDivider();
     setPositions();
     bloc = DateBloc(_divider, _positionYear);
-    if(widget.initialData != null) bloc.dateIn.add(widget.initialData);
+    if (widget.initialData != null) bloc.dateIn.add(widget.initialData);
     super.initState();
   }
 
@@ -76,46 +76,51 @@ class DateTextFormFieldState extends State<DateTextFormField> {
     print('rebuild');
 
     return StreamBuilder<String>(
-      stream: bloc.dateOut,
-      builder: (context, snapshot) {
-        _textController = TextEditingController.fromValue(TextEditingValue(text: snapshot?.data ?? '', selection: TextSelection.collapsed(offset: snapshot?.data?.length ?? 0)));
+        stream: bloc.dateOut,
+        builder: (context, snapshot) {
+          _textController = TextEditingController.fromValue(TextEditingValue(
+              text: snapshot?.data ?? '',
+              selection: TextSelection.collapsed(
+                  offset: snapshot?.data?.length ?? 0)));
 
-        return TextFormField(
-          controller: _textController,
-          maxLength: 10,
-          keyboardType: TextInputType.datetime,
-          onChanged: ((value){
-            bloc.dateIn.add(bloc.date.value.length <= value.length ? value : value + '!');
-          }),
-          validator: ((value) {
-            if (value.isNotEmpty) {
-              List _valueSplit = value.split(_divider);
-              List<int> _dateList = List<int>();
-              _valueSplit.forEach((v) {
-                _dateList.add(int.parse(v));
-              });
-              if (_dateList[_positionYear] >= 1900 &&
-                  _dateList[_positionMonth] <= 12 &&
-                  _dateList[_positionDay] <= 31) {
-                DateTime date = DateTime(_dateList[_positionYear],
-                    _dateList[_positionMonth], _dateList[_positionDay]);
+          return TextFormField(
+            controller: _textController,
+            maxLength: 10,
+            keyboardType: TextInputType.datetime,
+            onChanged: ((value) {
+              bloc.dateIn.add(
+                  bloc.date.value.length <= value.length ? value : value + '!');
+            }),
+            validator: ((value) {
+              if (value.isNotEmpty) {
+                List _valueSplit = value.split(_divider);
+                List<int> _dateList = List<int>();
+                _valueSplit.forEach((v) {
+                  _dateList.add(int.parse(v));
+                });
+                if (_dateList[_positionYear] >= 1900 &&
+                    _dateList[_positionMonth] <= 12 &&
+                    _dateList[_positionDay] <= 31) {
+                  DateTime date = DateTime(_dateList[_positionYear],
+                      _dateList[_positionMonth], _dateList[_positionDay]);
 
-                if (widget.validator(date)) {
-                  widget.onValidate(date);
-                  return null;
+                  if (widget.validator(date)) {
+                    widget.onValidate(date);
+                    return null;
+                  } else {
+                    return widget.labelFail;
+                  }
                 } else {
                   return widget.labelFail;
                 }
               } else {
-                return widget.labelFail;
+                return widget.validator(DateTime(0000, 00, 00))
+                    ? null
+                    : widget.labelFail;
               }
-            } else {
-              return widget.labelFail;
-            }
-          }),
-          decoration: widget.decoration,
-        );
-      }
-    );
+            }),
+            decoration: widget.decoration,
+          );
+        });
   }
 }
