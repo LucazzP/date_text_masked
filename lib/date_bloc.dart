@@ -10,7 +10,7 @@ class DateBloc extends BlocBase{
 
   BehaviorSubject<String> date = BehaviorSubject<String>.seeded('');
   Sink<String> get dateIn => date.sink;
-  Observable<String> get dateOut => date.map((_date) {
+  Stream<String> get dateOut => date.map((_date) {
     String _formated = _date.endsWith('!') ? _date.replaceAll('!', '') : _date;
     if(!date.value.endsWith(divider) &&  !_date.endsWith('!')){
       if(date.value.length == (_positionYear == 0 ? 4 : 2) 
