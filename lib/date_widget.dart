@@ -6,6 +6,7 @@ class DateTextFormField extends StatefulWidget {
   final String labelFail;
   final InputDecoration decoration;
   final bool Function(DateTime) validator;
+  final Function(DateTime) onChanged;
 
   ///Don't use the caracter '!' to divide the date.
   final String dateFormat;
@@ -18,7 +19,7 @@ class DateTextFormField extends StatefulWidget {
       @required this.validator,
       this.dateFormat = 'yyyy-dd-mm',
       this.initialData,
-      Key key})
+      Key key, this.onChanged})
       : super(key: key);
 
   @override
@@ -68,6 +69,25 @@ class DateTextFormFieldState extends State<DateTextFormField> {
     setPositions();
     bloc = DateBloc(_divider, _positionYear);
     if (widget.initialData != null) bloc.dateIn.add(widget.initialData);
+    bloc.dateOut.listen((_date){
+    if (_date.isNotEmpty) {
+      List _valueSplit = _date.split(_divider);
+      List<int> _dateList = List<int>();
+      _valueSplit.forEach((v) {
+        _dateList.add(int.parse(v));
+      });
+      if (_dateList[_positionYear] >= 1900 &&
+          _dateList[_positionMonth] <= 12 &&
+          _dateList[_positionDay] <= 31) {
+        DateTime date = DateTime(_dateList[_positionYear],
+            _dateList[_positionMonth], _dateList[_positionDay]);
+
+        if (widget.validator(date)) {
+          widget.onChanged(date);
+        }
+      }
+    }
+  });
     super.initState();
   }
 
