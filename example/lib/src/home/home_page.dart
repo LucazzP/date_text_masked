@@ -29,6 +29,8 @@ class _HomePageState extends State<HomePage> {
                 validator: ((date) {
                   return true;
                 }),
+                firstDate: DateTime(1900),
+                lastDate: DateTime(2100),
               ),
               RaisedButton(
                 onPressed: () {

@@ -7,6 +7,8 @@ class DateTextFormField extends StatefulWidget {
   final InputDecoration decoration;
   final bool Function(DateTime) validator;
   final bool showDatePicker;
+  final DateTime firstDate;
+  final DateTime lastDate;
 
   ///Don't use the caracter '!' to divide the date.
   final String dateFormat;
@@ -20,7 +22,7 @@ class DateTextFormField extends StatefulWidget {
       this.dateFormat = 'yyyy-dd-mm',
       this.initialData,
       Key key,
-      this.showDatePicker = true})
+      this.showDatePicker = true, this.firstDate, this.lastDate})
       : super(key: key);
 
   @override
@@ -74,10 +76,10 @@ class DateTextFormFieldState extends State<DateTextFormField> {
                   bloc.dateIn.add(
                     dateTimeToString(await showDatePicker(
                       context: context,
-                      firstDate: DateTime(DateTime.now().year - 2),
+                      firstDate: widget.firstDate ?? DateTime(DateTime.now().year - 2),
                       initialDate:
                           bloc.date.value.isEmpty ? DateTime.now() : stringToDateTime(bloc.date.value),
-                      lastDate: DateTime(DateTime.now().year + 2),
+                      lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 2),
                     ),)
                   );
                 },
