@@ -6,6 +6,9 @@ class DateTextFormField extends StatefulWidget {
   final String labelFail;
   final InputDecoration decoration;
   final bool Function(DateTime) validator;
+  final bool showDatePicker;
+  final DateTime firstDate;
+  final DateTime lastDate;
 
   ///Don't use the caracter '!' to divide the date.
   final String dateFormat;
@@ -18,7 +21,10 @@ class DateTextFormField extends StatefulWidget {
       @required this.validator,
       this.dateFormat = 'yyyy-dd-mm',
       this.initialData,
-      Key key})
+      Key key,
+      this.showDatePicker = true,
+      this.firstDate,
+      this.lastDate})
       : super(key: key);
 
   @override
@@ -32,6 +38,7 @@ class DateTextFormFieldState extends State<DateTextFormField> {
   String _divider;
   DateBloc bloc;
   TextEditingController _textController;
+  InputDecoration decoration;
 
   String stringToMask(String dateFormat) {
     String date;
@@ -63,6 +70,30 @@ class DateTextFormFieldState extends State<DateTextFormField> {
 
   @override
   void initState() {
+    if (widget.showDatePicker) {
+      decoration =
+          widget.decoration == null ? InputDecoration() : widget.decoration;
+      decoration = decoration.copyWith(
+        suffixIcon: IconButton(
+          onPressed: () async {
+            bloc.dateIn.add(dateTimeToString(
+              await showDatePicker(
+                context: context,
+                firstDate:
+                    widget.firstDate ?? DateTime(DateTime.now().year - 2),
+                initialDate: bloc.date.value.isEmpty
+                    ? DateTime.now()
+                    : stringToDateTime(bloc.date.value),
+                lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 2),
+              ),
+            ));
+          },
+          icon: Icon(Icons.date_range),
+        ),
+      );
+    } else {
+      decoration = widget.decoration;
+    }
     _textController = TextEditingController(text: widget.initialData);
     setDivider();
     setPositions();
@@ -73,8 +104,6 @@ class DateTextFormFieldState extends State<DateTextFormField> {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuild');
-
     return StreamBuilder<String>(
         stream: bloc.dateOut,
         builder: (context, snapshot) {
@@ -119,8 +148,57 @@ class DateTextFormFieldState extends State<DateTextFormField> {
                     : widget.labelFail;
               }
             }),
-            decoration: widget.decoration,
+            decoration: decoration,
           );
         });
+  }
+
+  DateTime stringToDateTime(String value) {
+    if (value.isNotEmpty) {
+      List _valueSplit = value.split(_divider);
+      List<int> _dateList = List<int>();
+      _valueSplit.forEach((v) {
+        _dateList.add(int.parse(v));
+      });
+      if (_dateList[_positionYear] >= 1900 &&
+          _dateList[_positionMonth] <= 12 &&
+          _dateList[_positionDay] <= 31) {
+        DateTime date = DateTime(_dateList[_positionYear],
+            _dateList[_positionMonth], _dateList[_positionDay]);
+
+        return date;
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
+
+  String dateTimeToString(DateTime dateTime) {
+    String _date = '';
+    if (dateTime != null) {
+      if (_positionYear == 0) _date += dateTime.year.toString().padLeft(4, '0');
+      if (_positionMonth == 0)
+        _date += dateTime.month.toString().padLeft(2, '0');
+      if (_positionDay == 0) _date += dateTime.day.toString().padLeft(2, '0');
+
+      _date += _divider;
+
+      if (_positionYear == 1) _date += dateTime.year.toString().padLeft(4, '0');
+      if (_positionMonth == 1)
+        _date += dateTime.month.toString().padLeft(2, '0');
+      if (_positionDay == 1) _date += dateTime.day.toString().padLeft(2, '0');
+
+      _date += _divider;
+
+      if (_positionYear == 2) _date += dateTime.year.toString().padLeft(4, '0');
+      if (_positionMonth == 2)
+        _date += dateTime.month.toString().padLeft(2, '0');
+      if (_positionDay == 2) _date += dateTime.day.toString().padLeft(2, '0');
+    } else {
+      return '';
+    }
+    return _date;
   }
 }
