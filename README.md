@@ -4,6 +4,7 @@
 
   
 
+[![pub package](https://img.shields.io/pub/v/date_text_masked.svg)](https://pub.dev/packages/date_text_masked)
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
 [![GitHub Issues](https://img.shields.io/github/issues/LucazzP/date_text_masked.svg)](https://github.com/LucazzP/date_text_masked/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/LucazzP/date_text_masked.svg)](https://github.com/LucazzP/date_text_masked/pulls)
