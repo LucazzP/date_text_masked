@@ -1,3 +1,8 @@
+## [0.1.5] - 2019/01/31
+ - Added option to show datePicker
+ - Added firstDate
+ - Added lastDate
+
 ## [0.1.4] - 2019/12/17
  - Rx dart updated to 0.23.1
 

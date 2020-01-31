@@ -22,7 +22,9 @@ class DateTextFormField extends StatefulWidget {
       this.dateFormat = 'yyyy-dd-mm',
       this.initialData,
       Key key,
-      this.showDatePicker = true, this.firstDate, this.lastDate})
+      this.showDatePicker = true,
+      this.firstDate,
+      this.lastDate})
       : super(key: key);
 
   @override
@@ -68,24 +70,27 @@ class DateTextFormFieldState extends State<DateTextFormField> {
 
   @override
   void initState() {
-    if(widget.showDatePicker) {
-      decoration = widget.decoration == null ? InputDecoration() : widget.decoration;
+    if (widget.showDatePicker) {
+      decoration =
+          widget.decoration == null ? InputDecoration() : widget.decoration;
       decoration = decoration.copyWith(
-              suffixIcon: IconButton(
-                onPressed: () async {
-                  bloc.dateIn.add(
-                    dateTimeToString(await showDatePicker(
-                      context: context,
-                      firstDate: widget.firstDate ?? DateTime(DateTime.now().year - 2),
-                      initialDate:
-                          bloc.date.value.isEmpty ? DateTime.now() : stringToDateTime(bloc.date.value),
-                      lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 2),
-                    ),)
-                  );
-                },
-                icon: Icon(Icons.date_range),
+        suffixIcon: IconButton(
+          onPressed: () async {
+            bloc.dateIn.add(dateTimeToString(
+              await showDatePicker(
+                context: context,
+                firstDate:
+                    widget.firstDate ?? DateTime(DateTime.now().year - 2),
+                initialDate: bloc.date.value.isEmpty
+                    ? DateTime.now()
+                    : stringToDateTime(bloc.date.value),
+                lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 2),
               ),
-            );
+            ));
+          },
+          icon: Icon(Icons.date_range),
+        ),
+      );
     } else {
       decoration = widget.decoration;
     }
@@ -147,6 +152,7 @@ class DateTextFormFieldState extends State<DateTextFormField> {
           );
         });
   }
+
   DateTime stringToDateTime(String value) {
     if (value.isNotEmpty) {
       List _valueSplit = value.split(_divider);
@@ -169,25 +175,27 @@ class DateTextFormFieldState extends State<DateTextFormField> {
     }
   }
 
-  String dateTimeToString(DateTime dateTime){
+  String dateTimeToString(DateTime dateTime) {
     String _date = '';
     if (dateTime != null) {
-      if(_positionYear == 0) _date += dateTime.year.toString().padLeft(4, '0');
-      if(_positionMonth == 0) _date += dateTime.month.toString().padLeft(2, '0');
-      if(_positionDay == 0) _date += dateTime.day.toString().padLeft(2, '0');
+      if (_positionYear == 0) _date += dateTime.year.toString().padLeft(4, '0');
+      if (_positionMonth == 0)
+        _date += dateTime.month.toString().padLeft(2, '0');
+      if (_positionDay == 0) _date += dateTime.day.toString().padLeft(2, '0');
 
       _date += _divider;
 
-      if(_positionYear == 1) _date += dateTime.year.toString().padLeft(4, '0');
-      if(_positionMonth == 1) _date += dateTime.month.toString().padLeft(2, '0');
-      if(_positionDay == 1) _date += dateTime.day.toString().padLeft(2, '0');
+      if (_positionYear == 1) _date += dateTime.year.toString().padLeft(4, '0');
+      if (_positionMonth == 1)
+        _date += dateTime.month.toString().padLeft(2, '0');
+      if (_positionDay == 1) _date += dateTime.day.toString().padLeft(2, '0');
 
       _date += _divider;
 
-      if(_positionYear == 2) _date += dateTime.year.toString().padLeft(4, '0');
-      if(_positionMonth == 2) _date += dateTime.month.toString().padLeft(2, '0');
-      if(_positionDay == 2) _date += dateTime.day.toString().padLeft(2, '0');
-
+      if (_positionYear == 2) _date += dateTime.year.toString().padLeft(4, '0');
+      if (_positionMonth == 2)
+        _date += dateTime.month.toString().padLeft(2, '0');
+      if (_positionDay == 2) _date += dateTime.day.toString().padLeft(2, '0');
     } else {
       return '';
     }
