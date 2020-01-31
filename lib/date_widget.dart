@@ -81,7 +81,7 @@ class DateTextFormFieldState extends State<DateTextFormField> {
                 context: context,
                 firstDate:
                     widget.firstDate ?? DateTime(DateTime.now().year - 2),
-                initialDate: bloc.date.value.isEmpty
+                initialDate: bloc.date.value.isEmpty || bloc.date.value == null || stringToDateTime(bloc.date.value) == null
                     ? DateTime.now()
                     : stringToDateTime(bloc.date.value),
                 lastDate: widget.lastDate ?? DateTime(DateTime.now().year + 2),

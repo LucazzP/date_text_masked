@@ -1,6 +1,6 @@
 name: date_text_masked
 description: This plugin uses the TextFormField with mask for dates and converts from string to DateTime automatically.
-version: 0.1.5
+version: 1.0.0
 author: 
   Lucas Henrique Polazzo
   <lucashpolazzo2013@gmail.com>

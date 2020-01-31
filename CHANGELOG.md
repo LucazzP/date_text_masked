@@ -1,3 +1,8 @@
+## [1.0.0] - 2019/01/31
+ - Package is in beta.
+ - showDatePicker working when initialDate is null
+ - Added README.md
+ 
 ## [0.1.5] - 2019/01/31
  - Added option to show datePicker
  - Added firstDate

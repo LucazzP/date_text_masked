@@ -89,7 +89,7 @@ DateTextFormField(
     decoration: InputDecoration(),  // Decoration to the widget
     showDatePicker: true,
     dateFormat: 'yyyy-dd-mm',       // Date format to the mask, 'yyyy' is the year, 'dd' is the day and 'mm' is the month
-    initialDate: null,              // Initial date
+    initialData: null,              // Initial date
     firstDate: DateTime(1900),      // First Date to the showPicker if is enabled
     lastDate: DateTime(2100),       // Last Date to the showPicker if is enabled
 ),
